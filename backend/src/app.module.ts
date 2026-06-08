@@ -6,6 +6,7 @@ import { TmdbModule } from './tmdb/tmdb.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { RoomsModule } from './rooms/rooms.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RoomsModule } from './rooms/rooms.module';
     TmdbModule,
     AuthModule,
     RoomsModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
