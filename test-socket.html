@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Socket</title></head>
+<body>
+  <h2>Test WebSocket - MovieGame</h2>
+  <button onclick="createRoom()">Créer une room</button>
+  <button onclick="joinRoom()">Rejoindre la room</button>
+  <pre id="log"></pre>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script>
+    const socket = io('http://localhost:3001');
+    const log = document.getElementById('log');
+
+    function print(msg) {
+      log.textContent += JSON.stringify(msg, null, 2) + '\n---\n';
+    }
+
+    socket.on('connect', () => print({ event: 'connected', id: socket.id }));
+    socket.on('room:updated', (data) => print({ event: 'room:updated', data }));
+
+    function createRoom() {
+      socket.emit('room:create', { pseudo: 'Joueur1' }, (res) => print({ event: 'room:create response', res }));
+    }
+
+    let roomCode = null;
+    function joinRoom() {
+      roomCode = prompt('Code de la room ?');
+      socket.emit('room:join', { code: roomCode, pseudo: 'Joueur2' }, (res) => print({ event: 'room:join response', res }));
+    }
+  </script>
+</body>
+</html>
