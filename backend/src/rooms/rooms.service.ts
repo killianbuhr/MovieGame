@@ -12,7 +12,10 @@ export class RoomsService {
   async createRoom(pseudo: string) {
     const player = await this.prisma.player.create({ data: { pseudo } });
     const room = await this.prisma.room.create({
-      data: { code: this.generateCode() },
+      data: {
+        code: this.generateCode(),
+        scores: { create: { playerId: player.id, points: 0 } },
+      },
     });
     return { room, player };
   }
@@ -21,6 +24,7 @@ export class RoomsService {
     const room = await this.prisma.room.findUnique({ where: { code } });
     if (!room) throw new NotFoundException(`Room ${code} introuvable`);
     const player = await this.prisma.player.create({ data: { pseudo } });
+    await this.prisma.score.create({ data: { playerId: player.id, roomId: room.id, points: 0 } });
     return { room, player };
   }
 

@@ -25,7 +25,19 @@ export class RoomsGateway implements OnGatewayDisconnect {
     client.join(room.code);
     client.data.playerId = player.id;
     client.data.roomCode = room.code;
+    const state = await this.roomsService.getRoomState(room.code);
+    this.server.to(room.code).emit('room:updated', state);
     return { room, player };
+  }
+
+  @SubscribeMessage('room:state')
+  async handleState(
+    @MessageBody() data: { code: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    client.join(data.code);
+    client.data.roomCode = data.code;
+    return this.roomsService.getRoomState(data.code);
   }
 
   @SubscribeMessage('room:join')
